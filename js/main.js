@@ -152,3 +152,6 @@ const registrarproductos=()=>{
     console.log(listaProductos);
 }
 
+registrarproductos();
+createProducto();
+registrarVenta();
