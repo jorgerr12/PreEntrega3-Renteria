@@ -13,3 +13,25 @@
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
+
+.myaccount {
+    font-weight: 500;
+    font-size: 13px;
+    padding-left: 0px;
+    display: block!important;
+    line-height: 0px;
+}
+
+.display-block{
+    display: block !important;
+}
+article img {
+    width: 100%;
+}
+article{
+    text-align: center;
+}
+#products{
+    justify-content: center;
+    margin: 2rem;
+}
