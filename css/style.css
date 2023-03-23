@@ -12,6 +12,7 @@
     -webkit-border-radius: 3px; 
     -moz-border-radius: 3px;
     border-radius: 3px;
+    font-size: 12px;
 }
 
 .myaccount {
@@ -25,7 +26,7 @@
 .display-block{
     display: block !important;
 }
-article img {
+img {
     width: 100%;
 }
 article{
@@ -34,4 +35,12 @@ article{
 #products{
     justify-content: center;
     margin: 2rem;
+}
+.cartItem{
+align-items: center;
+}
+.cartTotal{
+    justify-content: space-around;
+    font-size: 2rem;
+    border-top: inherit;
 }
