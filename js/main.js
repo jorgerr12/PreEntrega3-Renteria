@@ -1,5 +1,5 @@
 //inicializacion de variables globales
-let productos = JSON.parse(localStorage.getItem("Products"));
+let productos =[]
 let cart = JSON.parse(localStorage.getItem("Cart"))||[];
 let count = 0;
 let container = document.getElementById("products");
@@ -8,6 +8,13 @@ const textbuscar = document.getElementById("textbuscar");
 const spanCount = document.getElementById("count");
 const cartBody = document.getElementById("cartBody");
 const textTotal = document.getElementById("textTotal")
+
+fetch('./js/products.json')
+    .then ((resp) => resp.json())
+    .then ((data) => {
+        productos = data
+        renderProducts('');
+    })
 
 //renderizar contenido de productos
 const renderProducts = (value) => {
@@ -44,11 +51,16 @@ const renderCart = () => {
                 <div class="col-md-5">
                     <span>${item.description}</span>
                 </div>
-                <div class="col-md-2">
-                    <strong style="
-                    font-size: 1.3rem">S/${item.price}</strong>
+                <div class="col-md-1 row">
+                    <button onClick="addCantidad(${item.id})" class="btn btn-outline-secondary">+</button>
+                    <span>${item.cantidad}</span>
+                    <button onClick="restCantidad(${item.id})" class="btn btn-outline-secondary">-</button>
                 </div>
                 <div class="col-md-2">
+                    <strong style="
+                    font-size: 1.3rem">S/${item.priceTotal}</strong>
+                </div>
+                <div class="col-md-1">
                     <button onClick="deleteProduct(${item.id})" class="btn"><span class="fas fa-trash"></span></button>
                 </div>   
     `
@@ -61,21 +73,62 @@ const deleteProduct =(id)=>{
     let item = cart.findIndex(item =>item.id ==id);
     cart.splice(item,1);
     localStorage.setItem("Cart",JSON.stringify(cart));
+    Notificacion("Se Elimino Producto del Carrito")
     renderCart();
 }
 //agregar producto a carrito
 const addProducts = (id) => {
     let item = productos.find(item => item.id == id);
-    cart.push(item);
+    let exist = cart.find(e =>e.id==item.id)
+    exist
+     ? 
+    (exist.cantidad++,
+    exist.priceTotal = item.price*exist.cantidad)
+     : 
+     cart.push({...item,cantidad:1,priceTotal:item.price})
+    console.log("exist",exist)
+   
     localStorage.setItem("Cart",JSON.stringify(cart));
     renderCart()
-    console.log(cart);
+    Notificacion("Se Agrego Producto al Carrito")
 }
 
 btnBuscar.addEventListener("click", () => {
     renderProducts(textbuscar.value)
 })
 
+//agregar cantidades
+const addCantidad=(id)=>{
+  let item = cart.find(item => item.id == id)
+   item.cantidad++
+   item.priceTotal= item.cantidad * item.price
+  renderCart()
+}
 
-renderProducts('');
+//restar cantidad
+const restCantidad = (id)=>{
+    let item = cart.find(item =>item.id == id)
+    item.cantidad == 1
+    ?
+    deleteProduct(id)
+    :
+    item.cantidad--
+    item.priceTotal= item.cantidad * item.price
+    renderCart()
+}
+
+function Notificacion(text){
+    Toastify({
+        text: text,
+        duration: 3500,
+        newWindow: false,
+        close: true,
+        gravity: "bottom",
+        position: "right",
+        style: {
+          background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+        onClick: function(){}
+    }).showToast();
+}
 renderCart();
