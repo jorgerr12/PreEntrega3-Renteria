@@ -65,7 +65,7 @@ const renderCart = () => {
                 </div>   
     `
     cartBody.appendChild(product);
-    textTotal.innerHTML = `S/${cart.reduce((acc,item)=>acc+item.price,0)}`
+    textTotal.innerHTML = `S/${cart.reduce((acc,item)=>acc+item.priceTotal,0)}`
     })
 }
 //eliminar producto de carrito
