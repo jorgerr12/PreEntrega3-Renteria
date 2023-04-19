@@ -1,13 +1,14 @@
 //inicializacion de variables globales
 let productos =[]
-let cart = JSON.parse(localStorage.getItem("Cart"))||[];
+let cart = JSON.parse(localStorage.getItem("Cart"))||[]
 let count = 0;
-let container = document.getElementById("products");
-const btnBuscar = document.getElementById("btnBuscar");
-const textbuscar = document.getElementById("textbuscar");
-const spanCount = document.getElementById("count");
-const cartBody = document.getElementById("cartBody");
+let container = document.getElementById("products")
+const btnBuscar = document.getElementById("btnBuscar")
+const textbuscar = document.getElementById("textbuscar")
+const spanCount = document.getElementById("count")
+const cartBody = document.getElementById("cartBody")
 const textTotal = document.getElementById("textTotal")
+const cartFooter = document.getElementById("cartFooter")
 
 fetch('./js/products.json')
     .then ((resp) => resp.json())
@@ -38,18 +39,24 @@ const renderProducts = (value) => {
 };
 //renderizar carrito
 const renderCart = () => {
-    spanCount.innerHTML = cart.length;
-    cartBody.innerHTML='';
+    spanCount.innerHTML = cart.reduce((acc,item)=>acc+item.cantidad,0)
+    cartBody.innerHTML=''
+    cartFooter.innerHTML=''
     textTotal.innerHTML="S/0.00";
     cart.forEach(item => {
         let product = document.createElement('div');
+        let footer = document.createElement('div');
         product.className = 'row me-2 p-3 cartItem';
         product.innerHTML = `
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <img src="${item.img}" alt="">
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <span>${item.description}</span>
+                </div>
+                <div class="col-md-2">
+                    <strong style="
+                    font-size: 1.3rem">S/${item.price}</strong>
                 </div>
                 <div class="col-md-1 row">
                     <button onClick="addCantidad(${item.id})" class="btn btn-outline-secondary">+</button>
@@ -63,6 +70,10 @@ const renderCart = () => {
                 <div class="col-md-1">
                     <button onClick="deleteProduct(${item.id})" class="btn"><span class="fas fa-trash"></span></button>
                 </div>   
+    `
+    cartFooter.innerHTML= `
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button"  onClick="confirmarPedido()" class="btn btn-success ">Confirmar Pedido</button> 
     `
     cartBody.appendChild(product);
     textTotal.innerHTML = `S/${cart.reduce((acc,item)=>acc+item.priceTotal,0)}`
@@ -116,7 +127,14 @@ const restCantidad = (id)=>{
     item.priceTotal= item.cantidad * item.price
     renderCart()
 }
-
+// confirmar pedido
+const confirmarPedido = ()=>{
+    localStorage.removeItem("Cart")
+    cart =[]
+    renderCart()
+    $('#cartModal').modal('hide');
+    Notificacion("Pedico confirmado con exito")
+}
 function Notificacion(text){
     Toastify({
         text: text,
